@@ -6,7 +6,7 @@ import { sanitizeUserForFrontend } from "./userService";
 
 export async function makeSession(user: IUser, event: H3Event): Promise<IUser | undefined> {
     const authToken = uuidv4().replaceAll('-', '');
-    const session = await createSession({authToken, user});
+    const session = await createSession({authToken, userId:user.id});
     
     if(session && session.user && session.user.id){
         const userId = session.user.id;
