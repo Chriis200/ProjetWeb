@@ -14,7 +14,7 @@ export default {
     'content/**/*.md'
   ],
   plugins: [
-    require('@tailwindcss/typography')
+    
   ],
   theme: {
     colors: {
