@@ -9,6 +9,7 @@ export default defineNuxtConfig({
   },
   devtools: { enabled: true },
   modules: [
+    '@nuxtjs/tailwindcss',
     (_options, nuxt) => {
       nuxt.hooks.hook('vite:extendConfig', (config) => {
         // @ts-expect-error
@@ -30,4 +31,9 @@ export default defineNuxtConfig({
       autoprefixer: {},
     },
   },
+  tailwindcss: {
+    exposeConfig: true,
+    viewer: true,
+    // and more...
+  }
 })
