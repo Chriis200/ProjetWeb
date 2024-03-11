@@ -6,14 +6,15 @@ import { sanitizeUserForFrontend } from "./userService";
 
 export async function makeSession(user: IUser, event: H3Event): Promise<IUser | undefined> {
     const authToken = uuidv4().replaceAll('-', '');
-    const session = await createSession({authToken, userId:user.id});
-    
-    if(session && session.user && session.user.id){
-        const userId = session.user.id;
-        setCookie(event, 'auth_token', authToken, {path: '/', httpOnly: true});
+    const session = await createSession({ authToken, userId: user.id });
+    const userId = session.userId;
+
+    if (userId) {
+        setCookie(event, 'auth_token', authToken, { path: '/', httpOnly: true });
         return getUserBySessionToken(authToken);
     }
-    throw Error('Error creating Session');
+
+    return undefined;
 }
 
 export async function getUserBySessionToken(authToken: string): Promise<IUser | undefined> {

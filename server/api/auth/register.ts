@@ -4,8 +4,9 @@ import { createUser } from "~/prisma/repositories/userRepository"
 import bcrypt from 'bcrypt';
 import { makeSession } from "~/server/services/sessionService";
 import { doesUserExists } from "~/server/services/userService";
+import { eventHandler } from 'h3';
 
-export default async(event:H3Event) => {
+const yourEventHandler = eventHandler(async (event) => {
     const body = await readBody(event);
     const name = body.name;
     const username = body.username;
@@ -29,5 +30,6 @@ export default async(event:H3Event) => {
 
 
     return await makeSession(user, event);
-
-}
+});
+  
+export default yourEventHandler;

@@ -2,7 +2,7 @@ import prisma from "../client";
 import type { IUser } from "~/types/IUser";
 
 export async function getUserByEmail(email: string): Promise<IUser | null> {
-    const user = await prisma.utilisateur.findUnique({
+    const user = await prisma.user.findUnique({
         where: {
             email: email
         },
@@ -20,7 +20,7 @@ export async function getUserByEmail(email: string): Promise<IUser | null> {
 }
 
 export async function getUserByUsername(username: string): Promise<IUser | null> {
-    const user = prisma.utilisateur.findUnique({
+    const user = prisma.user.findUnique({
         where: {
             username: username
         },
@@ -38,7 +38,7 @@ export async function getUserByUsername(username: string): Promise<IUser | null>
 }
 
 export async function createUser(data: IUser) {
-    const user = await prisma.utilisateur.create({
+    const user = await prisma.user.create({
         data: {
             username: data.username,
             name: data.name,

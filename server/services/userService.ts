@@ -12,8 +12,8 @@ type RegistrationErrors = {
 }
 
 export async function doesUserExists(email: string, username: string): Promise<ExistsCheck> {
-    const hasEmail = getUserByEmail(email);
-    const hasUsername = getUserByUsername(email);
+    const hasEmail = await getUserByEmail(email);
+    const hasUsername = await getUserByUsername(email);
     const emailExists = hasEmail !== null;
     const usernameExists = hasUsername !== null;
 

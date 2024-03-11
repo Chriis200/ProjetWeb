@@ -38,7 +38,7 @@ async function getUserByAuthToken(authToken: string): Promise<IUser | null>{
     });
 
     if (session && session.userId) {
-        const user = await prisma.utilisateur.findUnique({
+        const user = await prisma.user.findUnique({
             where: {
                 id: session.userId
             }
