@@ -1,11 +1,14 @@
 <script setup lang="ts">
     import { ref } from "@vue/reactivity";
     import type { Ref } from "vue"
+    import { loginWithEmail } from "~/composables/useAuth";
 
     const email: Ref<string> = ref('');
     const password: Ref<string> = ref('');
     const hasError = ref(null);
     const errorMessage = ref(null);
+    const errors = ref<Map<any, any> | undefined>(new Map());
+    let response:any = ref<FormValidation>({ hasErrors: false });
 
     const isLogin = ref(true);
     const isPasswordLost = ref(false);
@@ -20,6 +23,15 @@
       isPasswordLost.value = false;
     }
     
+    definePageMeta({
+      middleware: "guest"
+    })
+
+    const postLoginForm = async function(){
+      await loginWithEmail(email.value, password.value);
+      /*response.value = await loginWithEmail(email.value, password.value);
+      errors.value = response.value.errors;*/
+    }
 </script>
 
 <template>
@@ -49,7 +61,7 @@
         </div>
         -->
         <div v-if="isLogin">
-          <form v-on:submit.prevent class="mt-8 space-y-6" action="#" method="POST">
+          <form v-on:submit.prevent class="mt-8 space-y-6" method="POST">
             <input type="hidden" name="remember" value="true" />
             <div class="rounded-md shadow-sm -space-y-px mb-1">
               <div>
@@ -70,8 +82,13 @@
             <div class="flex items-center justify-between">
               <div @click="switchToPasswordLost" class="text-sm font-medium text-indigo-600 hover:text-indigo-500 cursor-pointer">Mot de passe oublié ?</div>
             </div>
+            <div class="flex items-center justify-between">
+              <a class="text-sm font-medium text-indigo-600 hover:text-indigo-500 cursor-pointer" href="/register">Pas encore de compte ? S'inscrire</a>
+            </div>
+
+            
           </form>
-          <button @click=""
+          <button @click.prevent="postLoginForm"
             class="mt-5 group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
             Se connecter
           </button>
@@ -101,8 +118,6 @@
             Valider
           </button>
         </div>
-        
-        
       </div>
     </div>
   </div>

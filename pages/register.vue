@@ -10,15 +10,11 @@
     const hasError = ref(null);
     const errorMessage = ref(null);
     const errors = ref<Map<any, any> | undefined>(new Map());
-    let response = ref<FormValidation>({ hasErrors: false });
+    let response:any = ref<FormValidation>({ hasErrors: false });
 
     const postRegisterForm = async function(){
-      //await registerWithEmail(username.value, name.value, email.value, password.value);
-      //errors.value = response.value.errors
-
-
-      registerWithEmail(username.value, name.value, email.value, password.value);
-      errors.value = response.value.errors
+      response.value = await registerWithEmail(username.value, name.value, email.value, password.value);
+      errors.value = response.value.errors;
     }
 </script>
 
@@ -47,7 +43,7 @@
 
     
         </div>
-        <form v-on:submit.prevent class="mt-8 space-y-6" action="#" method="POST">
+        <form v-on:submit.prevent class="mt-8 space-y-6" method="POST">
           <input type="hidden" name="remember" value="true" />
           <div class="rounded-md shadow-sm -space-y-px mb-1">
             <div>

@@ -1,5 +1,7 @@
 import { getUserByEmail, getUserByUsername } from "~/prisma/repositories/userRepository";
 import type { IUser } from "~/types/IUser";
+import type { RegistationRequest } from '~~/types/IRegistration';
+import { validate } from "./validator";
 
 type ExistsCheck = {
     value: boolean
@@ -33,6 +35,15 @@ export async function doesUserExists(email: string, username: string): Promise<E
     }
 
     return {value: false};
+}
+
+export async function validateUser(data:RegistationRequest): Promise<FormValidation> {
+    const errors = await validate(data);
+
+    if(errors.size > 0){
+        return {hasErrors:true, errors};
+    }
+    return {hasErrors:false};
 }
 
 export function sanitizeUserForFrontend(user: IUser | undefined): IUser|undefined{

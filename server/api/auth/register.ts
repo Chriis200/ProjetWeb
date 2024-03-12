@@ -3,33 +3,36 @@ import type { IUser } from "~/types/IUser";
 import { createUser } from "~/prisma/repositories/userRepository"
 import bcrypt from 'bcrypt';
 import { makeSession } from "~/server/services/sessionService";
-import { doesUserExists } from "~/server/services/userService";
-import { eventHandler } from 'h3';
+import type { RegistationRequest } from '~~/types/IRegistration';
+import { validateUser } from "~/server/services/userService";
 
-const yourEventHandler = eventHandler(async (event) => {
+export default async (event: H3Event) => {
     const body = await readBody(event);
-    const name = body.name;
-    const username = body.username;
-    const email: string = body.email;
-    const password: string = body.password;
+    const data = body.data as RegistationRequest;
 
-    const userExists = await doesUserExists(email, username);
-
-    if(userExists.value === true){
-        sendError(event, createError({statusCode: 422, statusMessage: userExists.message}));
+    const validation = await validateUser(data);
+    if (validation.hasErrors === true) {
+        if (validation.errors) {
+            const errors = JSON.stringify(Object.fromEntries(validation.errors));
+            sendError(event, createError({ statusCode: 422, data: errors }));
+        } 
     }
-
-    const encryptedPassword: string = await bcrypt.hash(password, 10);
+    
+    let encryptedPassword:string;
+    if (data.password !== undefined) {
+        encryptedPassword = await bcrypt.hash(data.password, 10);
+        // Utilisez encryptedPassword comme nécessaire
+    } else {
+        throw new Error("Le mot de passe doit être défini.");
+    }
     const userData: IUser = {
-        username: username,
-        name: name,
-        email: email,
+        username: data.username,
+        name: data.name,
+        email: data.email,
         password: encryptedPassword,
     }
     const user = await createUser(userData);
 
 
     return await makeSession(user, event);
-});
-  
-export default yourEventHandler;
+};
